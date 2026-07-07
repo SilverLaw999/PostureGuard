@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using PostureGuard.Libraries;
 
 namespace PostureGuard.Systems
@@ -17,7 +17,7 @@ namespace PostureGuard.Systems
         private const double RecoveryDecrement = 12.0;
 
         // DETECTION CONSTANTS
-        // We focus on Height (Depth) because tilting the screen doesn't change how close you are.
+        // Height (Depth) because tilting the screen doesn't change how close you are.
         private const double DepthSensitivity = 1.08; // 8% increase in head size triggers slouch
         private const double VerticalLeeway = 0.08;   // 8% drop in Y (very lenient to allow for screen tilt)
 
@@ -37,18 +37,15 @@ namespace PostureGuard.Systems
 
             if (!current.IsValid) return;
 
-            // 1. Z-Axis Check (Depth): Did your head get bigger? 
-            // This is the primary check for laptop users who tilt their screens.
+            // Z-Axis Check (Depth)
             double hLimit = config.BaselineHeight * DepthSensitivity;
             bool isLeaningIn = current.Height > hLimit;
 
-            // 2. Y-Axis Check (Vertical): Did your head drop relative to your own size?
-            // We use BaselineHeight as a unit of measure to make it proportional.
+            // Y-Axis Check (Vertical)
             double yLimit = config.BaselineY + (config.BaselineHeight * VerticalLeeway);
             bool isDropping = current.Y > yLimit;
 
-            // Logic: If you are leaning in OR dropping, the bucket fills.
-            // This catches the slouch even if you've tilted the screen to "center" yourself.
+            // if leaning in OR dropping, the bucket fills.
             bool isSlouching = isLeaningIn || isDropping;
 
             if (isSlouching)
