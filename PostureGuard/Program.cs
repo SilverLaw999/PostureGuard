@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
@@ -18,7 +18,7 @@ namespace PostureGuard
         [STAThread]
         static void Main(string[] args)
         {
-            // Init Phase: Module Loading
+            // Module Loading
             _persistence.Init();
             _vision.Init();
             _calibration.Init();
@@ -26,12 +26,11 @@ namespace PostureGuard
             UISystem ui = new UISystem();
             _monitor.Init(_vision, _calibration, ui);
 
-            // Command Handling (Calibration Phase)
+            // Command Handling
             if (args.Contains("--calibrate"))
             {
                 Thread.Sleep(2000);
 
-                // Updated to use the FaceData class instead of a tuple
                 FaceData data = _vision.GetFaceData();
 
                 if (data.IsValid)
@@ -44,12 +43,10 @@ namespace PostureGuard
                     MessageBox.Show("Calibration Failed: No face detected.", "PostureGuard Error");
                 }
 
-                // Janitor: Cleanup hardware before exit
                 _vision.Dispose();
                 return;
             }
 
-            // Start Phase: Background Loop
             Thread monitorThread = new Thread(() =>
             {
                 while (true)
